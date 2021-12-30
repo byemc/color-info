@@ -1,0 +1,43 @@
+
+span.title {
+    padding-right: 0.5cm;
+}
+
+div#header {
+    /* Make the header stick to the top of the page */
+    position: fixed;
+    top: 0cm;
+    left: 0cm;
+    right: 0cm;
+    height: 0.5cm;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ccc;
+    padding-left: 0.5cm;
+    padding-right: 0.5cm;
+    padding-top: 0.4cm;
+    padding-bottom: 0.2cm;
+
+    /* Center the header text */
+    text-align: center;
+
+}
+
+body {
+    font-family: sans-serif;
+}
+
+#content {
+    /* Make the content appear below the header */
+    margin-top: 1cm;
+    padding-top: 0.5cm;
+}
+
+.colorname {
+    font-weight: bold;
+    /* Make the color name a little bit bigger */
+    font-size: 120%;
+    /* Center the color name */
+    text-align: center;
+    
+}
+

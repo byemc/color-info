@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Color Info</title>
+    <link rel="stylesheet" href="base.css">
+
+    <script type="text/javascript" src="https://chir.ag/projects/ntc/ntc.js"></script>
+
+
+
+    <script>
+        // when the site loads, set the background color to 010101 (black) unless the user is using a light mode on their device
+        window.onload = function() {
+
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.body.style.backgroundColor = "#010101";
+            } else {
+                document.body.style.backgroundColor = "#FEFEFE";
+            }
+            // and then set the color of the text to white if dark mode is enabled, or black if not
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.body.style.color = "#FEFEFE";
+            } else {
+                document.body.style.color = "#010101";
+            }
+
+            // if there is a "lang" query string, set the language to that value
+            if (window.location.search.indexOf("lang") != -1) {
+                var lang = window.location.search.substring(window.location.search.indexOf("lang") + 5);
+            } else {
+                var lang = "en";
+            }
+
+            // if lang is en-GB, change all instances of "Color" in the document to "Colour"
+            if (lang == "en-GB") {
+                var elements = document.getElementsByTagName("*");
+                for (var i = 0; i < elements.length; i++) {
+                    if (elements[i].innerHTML.indexOf("Color") != -1) {
+                        elements[i].innerHTML = elements[i].innerHTML.replace("Color", "Colour");
+                    }
+                }
+            }
+        }
+
+    </script>
+</head>
+<body>
+    <div id="header"><span class="title">Color Info</span><input type="text" name="color" id="colorinput" placeholder="Enter a color in HEX (#FFFFFF)"></div>
+
+    <!-- Information about the color -->
+    <div id="content">
+        <div class="colorname">
+            <span id="colornamevalue">Pick a color</span>
+        </div>
+    </div>
+
+    <script>        
+
+function lightOrDark(color) {
+
+// Variables for red, green, blue values
+var r, g, b, hsp;
+
+// Check the format of the color, HEX or RGB?
+if (color.match(/^rgb/)) {
+
+    // If RGB --> store the red, green, blue values in separate variables
+    color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+    
+    r = color[1];
+    g = color[2];
+    b = color[3];
+} 
+else {
+    
+    // If hex --> Convert it to RGB: http://gist.github.com/983661
+    color = +("0x" + color.slice(1).replace( 
+    color.length < 5 && /./g, '$&$&'));
+
+    r = color >> 16;
+    g = color >> 8 & 255;
+    b = color & 255;
+}
+
+// HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
+hsp = Math.sqrt(
+0.299 * (r * r) +
+0.587 * (g * g) +
+0.114 * (b * b)
+);
+
+// Using the HSP value, determine whether the color is light or dark
+if (hsp>127.5) {
+
+    return 'light';
+} 
+else {
+
+    return 'dark';
+}
+}
+
+    // Add an event listener to the color input field
+    document.getElementById("colorinput").addEventListener("keyup", function(event) {
+        // if the user presses enter, run the function
+        // if the color input field is empty, do nothing
+        if (document.getElementById("colorinput").value == "") {
+            return;
+        }
+        // otherwise, run the function
+        else {
+            // get the color from the input field
+            var color = document.getElementById("colorinput").value;
+            // if the color is not in the format #xxxxxx, do nothing
+            if (color.indexOf("#") == -1) {
+                color = "#" + color;
+            }
+            // otherwise, run the function
+            else {
+                // Change the header's background color to the color entered
+                document.getElementById("header").style.backgroundColor = color;
+                // Make the header fade into that color
+                document.getElementById("header").style.transition = "background-color 0.5s ease";
+                // Change the text color to the opposite of the color entered
+                if (lightOrDark(color) == "light") {
+                    document.getElementById("header").style.color = "#010101";
+                } else {
+                    document.getElementById("header").style.color = "#FEFEFE";
+                }
+
+                // and fade the text into that color
+                document.getElementById("header").style.transition = "color 0.5s ease";
+
+                // And set the body's background color to black if if the color is dark, or white if it is light
+                if (lightOrDark(color) == "light") {
+                    document.body.style.backgroundColor = "#FEFEFE";
+                } else {
+                    document.body.style.backgroundColor = "#010101";
+                }
+                // And fade into that color
+                document.body.style.transition = "background-color 0.5s ease";
+
+                // Change the text color to the opposite of the color entered
+                if (lightOrDark(color) == "light") {
+                    document.body.style.color = "#010101";
+                } else {
+                    document.body.style.color = "#FEFEFE";
+                }
+                // and fade the text into that color
+                document.body.style.transition = "color 0.5s ease";
+
+                // Get the color's name
+                var color_things = ntc.name(color);
+                var color_name = color_things[1];
+
+                // Change the text value in the span with an id of "colornamevalue" to the color's name
+                document.getElementById("colornamevalue").innerHTML = color_name;
+
+            }
+        
+        }
+
+    });
+
+    </script>
+
+</body>
+</html>
